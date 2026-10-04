@@ -80,6 +80,34 @@ The API is designed as a standalone backend service that can be consumed by web 
 | python-dotenv | Environment configuration |
 
 ---
+##🚧 Current Development Status
+
+🚧 Project Under Active Development
+
+This project is currently in the building phase and is not yet considered production-ready. Features, APIs, database integration, and project structure are actively being implemented and refined.
+
+The planned completion target is October 12, 2026.
+
+Once the project reaches its stable release, this README will be updated with:
+
+Complete setup instructions
+Required dependencies
+Environment configuration
+Database setup
+Local development instructions
+API documentation and usage examples
+Complete project structure and configuration details
+
+Please consider the current repository a work in progress until the final release.
+
+> **Target completion:** October 12, 2026
+
+> This project is currently in the building phase and is not yet production-ready. Core features, database integration, API functionality, and project structure are actively being implemented and refined.
+
+> After completion, this README will be updated with the complete setup guide, dependencies, environment configuration, database setup, local development instructions, API documentation, and usage examples required to run the project locally.
+>
+> **The current repository should be considered a work in progress.**
+
 
 ## Architecture
 
@@ -115,36 +143,8 @@ The API is designed as a standalone backend service that can be consumed by web 
 
 
 
-##🚧 Current Development Status
 
-🚧 Project Under Active Development
 
-This project is currently in the building phase and is not yet considered production-ready. Features, APIs, database integration, and project structure are actively being implemented and refined.
 
-The planned completion target is October 12, 2026.
-
-Once the project reaches its stable release, this README will be updated with:
-
-Complete setup instructions
-Required dependencies
-Environment configuration
-Database setup
-Local development instructions
-API documentation and usage examples
-Complete project structure and configuration details
-
-Please consider the current repository a work in progress until the final release.
-
-## 🚧 Project Status
-
-> **Under Active Development**
->
-> This project is currently in the building phase and is not yet production-ready. Core features, database integration, API functionality, and project structure are actively being implemented and refined.
->
-> **Target completion:** October 12, 2026
->
-> After completion, this README will be updated with the complete setup guide, dependencies, environment configuration, database setup, local development instructions, API documentation, and usage examples required to run the project locally.
->
-> **The current repository should be considered a work in progress.**
 
 
