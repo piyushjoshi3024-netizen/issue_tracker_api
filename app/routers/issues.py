@@ -4,7 +4,12 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.issue import Issue
-from app.schemas.issue import IssueCreate, IssueUpdate
+from app.schemas.issue import (
+    IssueCreate,
+    IssueUpdate,
+    IssueResponse,
+    IssueMessageResponse
+)
 
 router = APIRouter()
 
@@ -13,23 +18,21 @@ router = APIRouter()
 # GET ALL ISSUES
 # =========================
 
-@router.get("/")
+@router.get("/", response_model=list[IssueResponse])
 def get_issues(
     db: Session = Depends(get_db)
 ):
     result = db.execute(select(Issue))
     issues = result.scalars().all()
 
-    return {
-        "issues": issues
-    }
+    return issues
 
 
 # =========================
 # GET ONE ISSUE
 # =========================
 
-@router.get("/{issue_id}")
+@router.get("/{issue_id}", response_model=IssueResponse)
 def get_issue(
     issue_id: int,
     db: Session = Depends(get_db)
@@ -49,7 +52,7 @@ def get_issue(
 # CREATE ISSUE
 # =========================
 
-@router.post("/")
+@router.post("/", response_model=IssueMessageResponse)
 def create_issue(
     issue_data: IssueCreate,
     db: Session = Depends(get_db)
@@ -75,7 +78,10 @@ def create_issue(
 # UPDATE ISSUE
 # =========================
 
-@router.put("/{issue_id}")
+@router.put(
+    "/{issue_id}",
+    response_model=IssueMessageResponse
+)
 def update_issue(
     issue_id: int,
     issue_data: IssueUpdate,
@@ -89,7 +95,9 @@ def update_issue(
             detail="Issue not found"
         )
 
-    update_data = issue_data.model_dump(exclude_unset=True)
+    update_data = issue_data.model_dump(
+        exclude_unset=True
+    )
 
     if "status" in update_data:
         update_data["status"] = update_data["status"].value
@@ -126,13 +134,13 @@ def delete_issue(
             detail="Issue not found"
         )
 
-    deleted_issue = {
-        "id": issue.id,
-        "title": issue.title,
-        "description": issue.description,
-        "status": issue.status,
-        "priority": issue.priority
-    }
+    deleted_issue = IssueResponse(
+        id=issue.id,
+        title=issue.title,
+        description=issue.description,
+        status=issue.status,
+        priority=issue.priority
+    )
 
     db.delete(issue)
     db.commit()

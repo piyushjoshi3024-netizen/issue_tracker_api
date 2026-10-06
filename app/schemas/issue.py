@@ -31,7 +31,7 @@ class IssueCreate(BaseModel):
 
 
 class IssueUpdate(BaseModel):
-
+    
     title: str | None = Field(
         default=None,
         min_length=3,
@@ -43,3 +43,21 @@ class IssueUpdate(BaseModel):
     status: IssueStatus | None = None
 
     priority: IssuePriority | None = None
+
+
+class IssueResponse(BaseModel):
+
+    id: int
+    title: str
+    description: str
+    status: IssueStatus
+    priority: IssuePriority
+
+    model_config = {
+        "from_attributes": True
+    }
+    
+class IssueMessageResponse(BaseModel):
+    
+    message: str
+    issue: IssueResponse
