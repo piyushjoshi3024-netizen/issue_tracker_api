@@ -10,7 +10,7 @@ from app.schemas.issue import (
     IssueResponse,
     IssueMessageResponse
 )
-
+from fastapi import APIRouter, Depends , HTTPException , status
 router = APIRouter()
 
 
@@ -52,7 +52,10 @@ def get_issue(
 # CREATE ISSUE
 # =========================
 
-@router.post("/", response_model=IssueMessageResponse)
+@router.post("/", 
+response_model=IssueMessageResponse,
+status_code=status.HTTP_201_CREATED
+)
 def create_issue(
     issue_data: IssueCreate,
     db: Session = Depends(get_db)
@@ -121,7 +124,9 @@ def update_issue(
 # DELETE ISSUE
 # =========================
 
-@router.delete("/{issue_id}")
+@router.delete("/{issue_id}",
+status_code=status.HTTP_204_NO_CONTENT
+)
 def delete_issue(
     issue_id: int,
     db: Session = Depends(get_db)
