@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -10,7 +11,7 @@ from app.schemas.issue import (
     IssueResponse,
     IssueMessageResponse
 )
-from fastapi import APIRouter, Depends , HTTPException , status
+
 router = APIRouter()
 
 
@@ -52,9 +53,10 @@ def get_issue(
 # CREATE ISSUE
 # =========================
 
-@router.post("/", 
-response_model=IssueMessageResponse,
-status_code=status.HTTP_201_CREATED
+@router.post(
+    "/",
+    response_model=IssueMessageResponse,
+    status_code=status.HTTP_201_CREATED
 )
 def create_issue(
     issue_data: IssueCreate,
@@ -124,8 +126,9 @@ def update_issue(
 # DELETE ISSUE
 # =========================
 
-@router.delete("/{issue_id}",
-status_code=status.HTTP_204_NO_CONTENT
+@router.delete(
+    "/{issue_id}",
+    status_code=status.HTTP_204_NO_CONTENT
 )
 def delete_issue(
     issue_id: int,
@@ -139,18 +142,5 @@ def delete_issue(
             detail="Issue not found"
         )
 
-    deleted_issue = IssueResponse(
-        id=issue.id,
-        title=issue.title,
-        description=issue.description,
-        status=issue.status,
-        priority=issue.priority
-    )
-
     db.delete(issue)
-    db.commit()
-
-    return {
-        "message": "Issue deleted successfully",
-        "issue": deleted_issue
-    }
+    db.commit();

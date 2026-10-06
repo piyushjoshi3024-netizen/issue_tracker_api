@@ -68,16 +68,16 @@ The API is designed as a standalone backend service that can be consumed by web 
 
 ## Tech Stack
 
-| Technology | Purpose |
-|------------|---------|
-| Python | Backend programming language |
-| FastAPI | REST API framework |
-| Pydantic | Data validation and schemas |
-| SQLAlchemy | ORM and database interaction |
-| PostgreSQL | Relational database |
-| psycopg | PostgreSQL driver |
-| Uvicorn | ASGI server |
-| python-dotenv | Environment configuration |
+- **Python 3.14**
+- **FastAPI** — REST API framework
+- **Pydantic v2** — Request/response validation
+- **SQLAlchemy 2.1** — ORM
+- **PostgreSQL 18** — Relational database
+- **Psycopg 3** — PostgreSQL driver
+- **Alembic** — Database migrations
+- **Uvicorn** — ASGI server
+- **python-dotenv** — Environment variable management
+- **DataGrip** — Database client
 
 ---
 ##🚧 Current Development Status
@@ -142,9 +142,41 @@ Please consider the current repository a work in progress until the final releas
                 └───────────┘
 
 
+📌 Current Development Status
+Completed
+ FastAPI project setup
+ PostgreSQL integration
+ SQLAlchemy ORM
+ Pydantic request schemas
+ Pydantic response schemas
+ Issue CRUD
+ Modular API router
+ HTTP status codes
+ Database session management
+ Transaction handling
+ Global SQLAlchemy exception handling
+ Issue timestamps
+ Alembic setup
+ First database migration
+ PostgreSQL schema migration
 
 
-
+🚧 Upcoming
+ Database constraints
+ Indexes
+ Filtering by status and priority
+ Pagination
+ Search
+ Sorting
+ User model
+ Issue-user relationships
+ Authentication
+ JWT
+ Role-based access control
+ Testing with Pytest
+ Docker
+ Production deployment
+ CI/CD
 
 
 
