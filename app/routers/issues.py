@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status , Query
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -9,7 +9,9 @@ from app.schemas.issue import (
     IssueCreate,
     IssueUpdate,
     IssueResponse,
-    IssueMessageResponse
+    IssueMessageResponse,
+    IssueStatus,
+    IssuePriority
 )
 
 router = APIRouter()
@@ -21,12 +23,26 @@ router = APIRouter()
 
 @router.get("/", response_model=list[IssueResponse])
 def get_issues(
+    status_filter: str | None = Query(default=None, alias="status"),
+    priority_filter: str | None = Query(default=None, alias="priority"),
+    skip: int = Query(default = 0, ge = 0),
+    limit: int = Query(default = 10 , ge = 1 , le = 100),
     db: Session = Depends(get_db)
 ):
-    result = db.execute(select(Issue))
-    issues = result.scalars().all()
+    
+    query = select(Issue)
+    if status_filter:
+        query = query.where(Issue.status == status_filter)
+        
+    if priority_filter:
+        query = query.where(Issue.priority == priority_filter)
+            
+    query = query.offset(skip).limit(limit)
 
-    return issues
+    result = db.execute(query)
+
+    return result.scalars().all() 
+ 
 
 
 # =========================
