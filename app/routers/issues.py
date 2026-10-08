@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.issue import Issue
+from app.schemas import issue
 from app.schemas.issue import (
     IssueCreate,
     IssueUpdate,
@@ -23,26 +24,44 @@ router = APIRouter()
 
 @router.get("/", response_model=list[IssueResponse])
 def get_issues(
-    status_filter: str | None = Query(default=None, alias="status"),
-    priority_filter: str | None = Query(default=None, alias="priority"),
-    skip: int = Query(default = 0, ge = 0),
-    limit: int = Query(default = 10 , ge = 1 , le = 100),
+    status_filter: IssueStatus | None = Query(default=None),
+    priority_filter: IssuePriority | None = Query(default=None),
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=10, ge=1, le=100),
+    sort_by: str = Query(default="created_at"),
+    order: str = Query(default="desc"),
     db: Session = Depends(get_db)
 ):
-    
     query = select(Issue)
+
+    # Filtering
     if status_filter:
-        query = query.where(Issue.status == status_filter)
-        
+        query = query.where(Issue.status == status_filter.value)
+
     if priority_filter:
-        query = query.where(Issue.priority == priority_filter)
-            
+        query = query.where(Issue.priority == priority_filter.value)
+
+    # Sorting
+    if sort_by == "created_at":
+        column = Issue.created_at
+    elif sort_by == "updated_at":
+        column = Issue.updated_at
+    elif sort_by == "priority":
+        column = Issue.priority
+    else:
+        column = Issue.created_at
+
+    if order == "asc":
+        query = query.order_by(column.asc())
+    else:
+        query = query.order_by(column.desc())
+
+    # Pagination
     query = query.offset(skip).limit(limit)
 
     result = db.execute(query)
 
-    return result.scalars().all() 
- 
+    return result.scalars().all()
 
 
 # =========================
