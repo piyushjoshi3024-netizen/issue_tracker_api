@@ -15,6 +15,11 @@ class UserCreate(BaseModel):
         max_length=100
     )
     
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+    
+    
 class UserResponse(BaseModel):
     
     id: int
