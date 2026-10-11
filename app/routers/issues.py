@@ -3,9 +3,11 @@ from fastapi import APIRouter, Depends, HTTPException, status , Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.utils.dependencies import get_current_user
 from app.database import get_db
 from app.models.issue import Issue
 from app.schemas import issue
+from app.models.user import User
 from app.schemas.issue import (
     IssueCreate,
     IssueUpdate,
@@ -14,13 +16,27 @@ from app.schemas.issue import (
     IssueStatus,
     IssuePriority
 )
-
+from app.utils.dependencies import get_current_user
 router = APIRouter()
 
 
 # =========================
 # GET ALL ISSUES
 # =========================
+
+@router.get("/my", response_model=list[IssueResponse])
+def get_my_issues(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    query = select(Issue).where(
+        Issue.user_id == current_user.id
+    )
+
+    result = db.execute(query)
+
+    return result.scalars().all()
+
 
 @router.get("/", response_model=list[IssueResponse])
 def get_issues(
@@ -68,6 +84,7 @@ def get_issues(
 # GET ONE ISSUE
 # =========================
 
+
 @router.get("/{issue_id}", response_model=IssueResponse)
 def get_issue(
     issue_id: int,
@@ -95,14 +112,16 @@ def get_issue(
 )
 def create_issue(
     issue_data: IssueCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     new_issue = Issue(
-        title=issue_data.title,
-        description=issue_data.description,
-        status=issue_data.status.value,
-        priority=issue_data.priority.value
-    )
+    title=issue_data.title,
+    description=issue_data.description,
+    status=issue_data.status.value,
+    priority=issue_data.priority.value,
+    user_id=current_user.id
+)
 
     db.add(new_issue)
     db.commit()
@@ -179,3 +198,4 @@ def delete_issue(
 
     db.delete(issue)
     db.commit();
+    

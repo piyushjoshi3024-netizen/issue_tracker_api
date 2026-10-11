@@ -1,10 +1,9 @@
 from datetime import datetime
 
-from sqlalchemy import String, Text, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey, String, Text, DateTime
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-
 
 class Issue(Base):
     __tablename__ = "issues"
@@ -13,6 +12,16 @@ class Issue(Base):
         primary_key=True,
         autoincrement=True
     )
+
+    user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=True
+    )
+    
+    user: Mapped["User"] = relationship(
+    back_populates="issues"
+    )
+
 
     title: Mapped[str] = mapped_column(
         String(100),
@@ -48,3 +57,5 @@ class Issue(Base):
         onupdate=datetime.utcnow,
         nullable=False
     )
+    
+    
