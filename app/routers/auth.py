@@ -10,7 +10,10 @@ from app.utils.security import hash_password
 from app.schemas.user import UserCreate, UserLogin, UserResponse
 from app.utils.security import hash_password, verify_password
 from app.utils.jwt import create_access_token
-from app.utils.dependencies import get_current_user
+from app.utils.dependencies import (
+    get_current_user,
+    require_admin
+)
 
 router = APIRouter()
 
@@ -103,3 +106,13 @@ def get_my_profile(
     current_user: User = Depends(get_current_user)
 ):
     return current_user  
+
+@router.get("/admin-test")
+def admin_test(
+    current_user: User = Depends(require_admin)
+):
+    return {
+        "message": "Welcome Admin!",
+        "user": current_user.username,
+        "role": current_user.role
+    }
