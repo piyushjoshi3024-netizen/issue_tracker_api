@@ -46,9 +46,12 @@ def get_issues(
     limit: int = Query(default=10, ge=1, le=100),
     sort_by: str = Query(default="created_at"),
     order: str = Query(default="desc"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    query = select(Issue)
+    query = select(Issue).where(
+        Issue.user_id == current_user.id
+        )
 
     # Filtering
     if status_filter:
@@ -88,9 +91,15 @@ def get_issues(
 @router.get("/{issue_id}", response_model=IssueResponse)
 def get_issue(
     issue_id: int,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    issue = db.get(Issue, issue_id)
+    issue = db.execute(
+        select(Issue).where(
+            Issue.id == issue_id,
+            Issue.user_id == current_user.id
+            )
+        ).scalar_one_or_none()
 
     if not issue:
         raise HTTPException(
@@ -137,16 +146,19 @@ def create_issue(
 # UPDATE ISSUE
 # =========================
 
-@router.put(
-    "/{issue_id}",
-    response_model=IssueMessageResponse
-)
+@router.put("/{issue_id}", response_model=IssueMessageResponse)
 def update_issue(
     issue_id: int,
     issue_data: IssueUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    issue = db.get(Issue, issue_id)
+    issue = db.execute(
+        select(Issue).where(
+            Issue.id == issue_id,
+            Issue.user_id == current_user.id
+        )
+    ).scalar_one_or_none()
 
     if not issue:
         raise HTTPException(
@@ -154,9 +166,7 @@ def update_issue(
             detail="Issue not found"
         )
 
-    update_data = issue_data.model_dump(
-        exclude_unset=True
-    )
+    update_data = issue_data.model_dump(exclude_unset=True)
 
     if "status" in update_data:
         update_data["status"] = update_data["status"].value
@@ -175,7 +185,6 @@ def update_issue(
         "issue": issue
     }
 
-
 # =========================
 # DELETE ISSUE
 # =========================
@@ -186,9 +195,15 @@ def update_issue(
 )
 def delete_issue(
     issue_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    issue = db.get(Issue, issue_id)
+    issue = db.execute(
+        select(Issue).where(
+            Issue.id == issue_id,
+            Issue.user_id == current_user.id
+        )
+    ).scalar_one_or_none()
 
     if not issue:
         raise HTTPException(
@@ -197,5 +212,4 @@ def delete_issue(
         )
 
     db.delete(issue)
-    db.commit();
-    
+    db.commit()   
