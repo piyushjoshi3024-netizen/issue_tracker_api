@@ -3,7 +3,10 @@ from fastapi import APIRouter, Depends, HTTPException, status , Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.utils.dependencies import get_current_user
+from app.utils.dependencies import (
+    get_current_user,
+    get_user_issue
+)
 from app.database import get_db
 from app.models.issue import Issue
 from app.schemas import issue
@@ -90,9 +93,7 @@ def get_issues(
 
 @router.get("/{issue_id}", response_model=IssueResponse)
 def get_issue(
-    issue_id: int,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+   issue: Issue = Depends(get_user_issue)
 ):
     issue = db.execute(
         select(Issue).where(
@@ -148,24 +149,10 @@ def create_issue(
 
 @router.put("/{issue_id}", response_model=IssueMessageResponse)
 def update_issue(
-    issue_id: int,
     issue_data: IssueUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    issue: Issue = Depends(get_user_issue),
+    db: Session = Depends(get_db)
 ):
-    issue = db.execute(
-        select(Issue).where(
-            Issue.id == issue_id,
-            Issue.user_id == current_user.id
-        )
-    ).scalar_one_or_none()
-
-    if not issue:
-        raise HTTPException(
-            status_code=404,
-            detail="Issue not found"
-        )
-
     update_data = issue_data.model_dump(exclude_unset=True)
 
     if "status" in update_data:
@@ -194,22 +181,8 @@ def update_issue(
     status_code=status.HTTP_204_NO_CONTENT
 )
 def delete_issue(
-    issue_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    issue: Issue = Depends(get_user_issue),
+    db: Session = Depends(get_db)
 ):
-    issue = db.execute(
-        select(Issue).where(
-            Issue.id == issue_id,
-            Issue.user_id == current_user.id
-        )
-    ).scalar_one_or_none()
-
-    if not issue:
-        raise HTTPException(
-            status_code=404,
-            detail="Issue not found"
-        )
-
     db.delete(issue)
-    db.commit()   
+    db.commit()
