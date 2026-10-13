@@ -5,7 +5,9 @@ from sqlalchemy.orm import Session
 
 from app.utils.dependencies import (
     get_current_user,
-    get_user_issue
+    get_user_issue,
+    require_admin,
+    get_admin_issue
 )
 from app.database import get_db
 from app.models.issue import Issue
@@ -85,6 +87,20 @@ def get_issues(
 
     return result.scalars().all()
 
+#===============================
+# Admin getting the issues of all users
+#==============================
+
+@router.get("/admin", response_model=list[IssueResponse])
+def get_all_issues_admin(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    query = select(Issue)
+    
+    result = db.execute(query)
+    
+    return result.scalars().all()
 
 # =========================
 # GET ONE ISSUE
@@ -142,6 +158,37 @@ def create_issue(
         "issue": new_issue
     }
 
+#=====================
+# admin updating the issue
+#====================
+
+@router.put(
+    "/admin/{issue_id}",
+    response_model=IssueMessageResponse
+)
+def admin_update_issue(
+    issue_data: IssueUpdate,
+    issue: Issue = Depends(get_admin_issue),
+    db: Session = Depends(get_db)
+):
+    update_data = issue_data.model_dump(exclude_unset=True)
+
+    if "status" in update_data:
+        update_data["status"] = update_data["status"].value
+
+    if "priority" in update_data:
+        update_data["priority"] = update_data["priority"].value
+
+    for field, value in update_data.items():
+        setattr(issue, field, value)
+
+    db.commit()
+    db.refresh(issue)
+
+    return {
+        "message": "Issue updated successfully by admin",
+        "issue": issue
+    }
 
 # =========================
 # UPDATE ISSUE
@@ -171,6 +218,24 @@ def update_issue(
         "message": "Issue updated successfully",
         "issue": issue
     }
+
+
+#=========================
+# admin deleting the issue
+#=======================
+
+@router.delete(
+    "/admin/{issue_id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def admin_delete_issue(
+    issue: Issue = Depends(get_admin_issue),
+    db: Session = Depends(get_db)
+):
+    db.delete(issue)
+    db.commit()
+
+
 
 # =========================
 # DELETE ISSUE

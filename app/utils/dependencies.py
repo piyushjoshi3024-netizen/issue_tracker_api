@@ -76,3 +76,19 @@ def require_admin(
         )
 
     return current_user
+
+
+def get_admin_issue(
+    issue_id: int = Path(...),
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    issue = db.get(Issue, issue_id)
+
+    if not issue:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Issue not found"
+        )
+
+    return issue
