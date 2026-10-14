@@ -66,80 +66,66 @@ The API is designed as a standalone backend service that can be consumed by web 
 
 ---
 
-## Tech Stack
-
-- **Python 3.14**
-- **FastAPI** — REST API framework
-- **Pydantic v2** — Request/response validation
-- **SQLAlchemy 2.1** — ORM
-- **PostgreSQL 18** — Relational database
-- **Psycopg 3** — PostgreSQL driver
-- **Alembic** — Database migrations
-- **Uvicorn** — ASGI server
-- **python-dotenv** — Environment variable management
-- **DataGrip** — Database client
-
----
-##🚧 Current Development Status
-
-🚧 Project Under Active Development
-
-This project is currently in the building phase and is not yet considered production-ready. Features, APIs, database integration, and project structure are actively being implemented and refined.
-
-The planned completion target is October 12, 2026.
-
-Once the project reaches its stable release, this README will be updated with:
-
-Complete setup instructions
-Required dependencies
-Environment configuration
-Database setup
-Local development instructions
-API documentation and usage examples
-Complete project structure and configuration details
-
 Please consider the current repository a work in progress until the final release.
 
-> **Target completion:** October 12, 2026
-
-> This project is currently in the building phase and is not yet production-ready. Core features, database integration, API functionality, and project structure are actively being implemented and refined.
-
-> After completion, this README will be updated with the complete setup guide, dependencies, environment configuration, database setup, local development instructions, API documentation, and usage examples required to run the project locally.
->
 > **The current repository should be considered a work in progress.**
+
+
+###Tech Stack
+
+| Technology          | Purpose                     |
+| ------------------- | --------------------------- |
+| **Python 3.14**     | Programming language        |
+| **FastAPI**         | REST API framework          |
+| **Pydantic v2**     | Request/response validation |
+| **SQLAlchemy 2.1**  | ORM                         |
+| **PostgreSQL 18**   | Relational database         |
+| **Psycopg 3**       | PostgreSQL driver           |
+| **Alembic**         | Database migrations         |
+| **Uvicorn**         | ASGI server                 |
+| **PyJWT**           | JWT authentication          |
+| **pwdlib + Argon2** | Password hashing            |
+| **python-dotenv**   | Environment configuration   |
+| **DataGrip**        | Database management         |
 
 
 ## Architecture
 
 ```text
-                    Client
-                      │
-                      ▼
-                ┌───────────┐
-                │  FastAPI  │
-                └─────┬─────┘
-                      │
-                      ▼
-              ┌───────────────┐
-              │    Pydantic   │
-              │   Validation  │
-              └───────┬───────┘
-                      │
-                      ▼
-              ┌───────────────┐
-              │   SQLAlchemy  │
-              │      ORM      │
-              └───────┬───────┘
-                      │
-                      ▼
-                ┌───────────┐
-                │  psycopg  │
-                └─────┬─────┘
-                      │
-                      ▼
-                ┌───────────┐
-                │ PostgreSQL│
-                └───────────┘
+                         Client
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │   FastAPI   │
+                    └──────┬──────┘
+                           │
+                           ▼
+                 ┌──────────────────┐
+                 │ Authentication & │
+                 │  Authorization   │
+                 └────────┬─────────┘
+                          │
+                          ▼
+                 ┌──────────────────┐
+                 │    Pydantic      │
+                 │   Validation     │
+                 └────────┬─────────┘
+                          │
+                          ▼
+                 ┌──────────────────┐
+                 │    SQLAlchemy    │
+                 │       ORM        │
+                 └────────┬─────────┘
+                          │
+                          ▼
+                    ┌───────────┐
+                    │  Psycopg  │
+                    └─────┬─────┘
+                          │
+                          ▼
+                    ┌───────────┐
+                    │ PostgreSQL│
+                    └───────────┘
 
 
 📌 Current Development Status
