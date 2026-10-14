@@ -143,40 +143,98 @@ Please consider the current repository a work in progress until the final releas
 
 
 📌 Current Development Status
-Completed
+
+##Completed
+
  FastAPI project setup
  PostgreSQL integration
  SQLAlchemy ORM
+ Psycopg 3 integration
+ Database session management
+ Transaction handling
  Pydantic request schemas
  Pydantic response schemas
  Issue CRUD
- Modular API router
- HTTP status codes
- Database session management
- Transaction handling
+ Modular API routers
+ Proper HTTP status codes
+ Error handling
  Global SQLAlchemy exception handling
  Issue timestamps
- Alembic setup
- First database migration
- PostgreSQL schema migration
-
-
-🚧 Upcoming
- Database constraints
- Indexes
- Filtering by status and priority
+ Filtering
  Pagination
- Search
  Sorting
+ Alembic setup
+ Database migrations
  User model
- Issue-user relationships
- Authentication
- JWT
+ User registration
+ Password hashing
+ Login
+ JWT authentication
+ Current-user authentication
+ Protected routes
+ User ↔ Issue relationship
+ Issue ownership authorization
  Role-based access control
- Testing with Pytest
+ Admin role
+ Admin authorization dependency
+ Admin issue listing
+ Admin issue updating
+ Admin issue deletion....
+
+🚧In Development
+
+ Issue comments
+ Comment-user relationship
+ Comment-issue relationship
+ Comment authorization
+ Labels / tags
+ Advanced search
+ Issue assignment
+ Activity / audit logs
+ Automated testing with Pytest
+ Database constraints and indexes
  Docker
- Production deployment
  CI/CD
+ Production deployment
 
 
 
+🗓️ Project Completion Target
+
+🎯 Target Completion Date: October 18, 2026
+
+The project is currently in active development.
+
+The core backend architecture, database integration, authentication, authorization, issue management, filtering, pagination, sorting, migrations, and administrator functionality have been implemented.
+
+The remaining development focuses on completing advanced issue-management features, automated testing, containerization, deployment, and final production-oriented improvements.
+
+
+he final version aims to provide:
+
+
+##FastAPI Backend
+       │
+       ├── Authentication
+       ├── Authorization
+       ├── RBAC
+       ├── Issue Management
+       ├── Comments
+       ├── Labels
+       ├── Search
+       ├── Filtering
+       ├── Pagination
+       ├── Audit Logs
+       ├── Automated Testing
+       ├── Docker
+       ├── CI/CD
+       └── Cloud Deployment
+
+
+📌 Project Status
+
+🚧 Active Development
+
+Target completion: October 18, 2026
+
+The repository will continue receiving incremental feature, architecture, testing, and deployment improvements until the planned completion date.
