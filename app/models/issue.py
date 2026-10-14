@@ -1,4 +1,5 @@
 from datetime import datetime
+from tokenize import Comment
 
 from sqlalchemy import ForeignKey, String, Text, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -56,6 +57,16 @@ class Issue(Base):
         default=datetime.utcnow,
         onupdate=datetime.utcnow,
         nullable=False
+    )
+    
+    comments: Mapped[list["Comment"]] = relationship(
+    back_populates="issue",
+    cascade="all, delete-orphan"
+    )
+    
+    comments: Mapped[list["Comment"]] = relationship(
+    back_populates="user",
+    cascade="all, delete-orphan"
     )
     
     
