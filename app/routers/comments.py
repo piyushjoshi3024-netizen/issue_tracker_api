@@ -8,7 +8,6 @@ from app.models.issue import Issue
 from app.models.user import User
 from app.schemas.comment import (
     CommentCreate,
-    CommentUpdate,
     CommentResponse
 )
 from app.utils.dependencies import get_current_user
@@ -28,7 +27,6 @@ def create_comment(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Check whether the issue exists
     issue = db.get(Issue, issue_id)
 
     if not issue:
@@ -37,7 +35,6 @@ def create_comment(
             detail="Issue not found"
         )
 
-    # Create the comment
     new_comment = Comment(
         issue_id=issue_id,
         user_id=current_user.id,
@@ -60,7 +57,6 @@ def get_issue_comments(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Check whether the issue exists
     issue = db.get(Issue, issue_id)
 
     if not issue:
@@ -69,7 +65,6 @@ def get_issue_comments(
             detail="Issue not found"
         )
 
-    # Get comments belonging to this issue
     query = select(Comment).where(
         Comment.issue_id == issue_id
     )
