@@ -11,7 +11,8 @@ from app.schemas.comment import (
     CommentResponse
 )
 from app.utils.dependencies import get_current_user
-
+from app.schemas.comment import CommentCreate, CommentUpdate, CommentResponse
+from app.utils.dependencies import get_current_user, get_user_comment
 
 router = APIRouter()
 
@@ -72,3 +73,33 @@ def get_issue_comments(
     result = db.execute(query)
 
     return result.scalars().all()
+
+
+
+@router.put(
+    "/comments/{comment_id}",
+    response_model=CommentResponse
+)
+def update_comment(
+    comment_data: CommentUpdate,
+    comment: Comment = Depends(get_user_comment),
+    db: Session = Depends(get_db)
+):
+    comment.content = comment_data.content
+
+    db.commit()
+    db.refresh(comment)
+
+    return comment
+
+
+@router.delete(
+    "/comments/{comment_id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def delete_comment(
+    comment: Comment = Depends(get_user_comment),
+    db: Session = Depends(get_db)
+):
+    db.delete(comment)
+    db.commit()

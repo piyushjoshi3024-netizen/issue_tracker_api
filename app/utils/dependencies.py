@@ -92,3 +92,24 @@ def get_admin_issue(
         )
 
     return issue
+
+
+def get_user_comment(
+    comment_id: int = Path(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    comment = db.execute(
+        select(Comment).where(
+            Comment.id == comment_id,
+            Comment.user_id == current_user.id
+        )
+    ).scalar_one_or_none()
+
+    if not comment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Comment not found"
+        )
+
+    return comment
