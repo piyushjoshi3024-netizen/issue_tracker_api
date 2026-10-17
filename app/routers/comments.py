@@ -8,15 +8,19 @@ from app.models.issue import Issue
 from app.models.user import User
 from app.schemas.comment import (
     CommentCreate,
+    CommentUpdate,
     CommentResponse
 )
-from app.utils.dependencies import get_current_user
-from app.schemas.comment import CommentCreate, CommentUpdate, CommentResponse
-from app.utils.dependencies import get_current_user, get_user_comment
+from app.utils.dependencies import (
+    get_current_user,
+    get_user_comment
+)
+
 
 router = APIRouter()
 
 
+# CREATE COMMENT
 @router.post(
     "/issues/{issue_id}/comments",
     response_model=CommentResponse,
@@ -49,6 +53,7 @@ def create_comment(
     return new_comment
 
 
+# GET COMMENTS FOR AN ISSUE
 @router.get(
     "/issues/{issue_id}/comments",
     response_model=list[CommentResponse]
@@ -66,8 +71,10 @@ def get_issue_comments(
             detail="Issue not found"
         )
 
-    query = select(Comment).where(
-        Comment.issue_id == issue_id
+    query = (
+        select(Comment)
+        .where(Comment.issue_id == issue_id)
+        .order_by(Comment.created_at.desc())
     )
 
     result = db.execute(query)
@@ -75,7 +82,7 @@ def get_issue_comments(
     return result.scalars().all()
 
 
-
+# UPDATE COMMENT
 @router.put(
     "/comments/{comment_id}",
     response_model=CommentResponse
@@ -93,6 +100,7 @@ def update_comment(
     return comment
 
 
+# DELETE COMMENT
 @router.delete(
     "/comments/{comment_id}",
     status_code=status.HTTP_204_NO_CONTENT
