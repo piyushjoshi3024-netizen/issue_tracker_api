@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 from app.routers.auth import router as auth_router
 from app.routers.comments import router as comment_router
+from app.routers.labels import router as label_router
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -55,4 +56,10 @@ app.include_router(
 app.include_router(
     comment_router,
     tags=["Comments"]
+)
+
+app.include_router(
+    label_router,
+    prefix="/labels",
+    tags=["Labels"]
 )
