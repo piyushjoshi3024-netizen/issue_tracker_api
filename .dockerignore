@@ -1,0 +1,9 @@
+myenv/
+__pycache__/
+*.pyc
+.git/
+.env.docker
+.dist/
+.pytest_cache/
+.vscode/
+.idea/
