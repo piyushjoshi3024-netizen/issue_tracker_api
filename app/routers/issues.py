@@ -24,6 +24,8 @@ from app.schemas.issue import (
 from app.utils.dependencies import get_current_user
 router = APIRouter()
 
+from sqlalchemy import select, or_
+
 
 # =========================
 # GET ALL ISSUES
